@@ -1,7 +1,7 @@
 % mlp.m Implementation of the Multi-Layer Perceptron
 
 clear all
-close all
+%close all
 
 examples = [0 0;1 0;0 1;1 1];
 goal = [0.01 0.99 0.99 0.01]';
@@ -85,7 +85,7 @@ while ~stop_criterium
         
         % Update the weight matrices
         w_hidden = w_hidden + delta_hidden;
-        w_output = w_output + delta_output;
+        w_output = w_output + delta_output.';
         
         % Store data
         epoch_error = epoch_error + (output_error).^2;        
