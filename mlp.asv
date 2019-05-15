@@ -68,16 +68,16 @@ while ~stop_criterium
         output_error = goal - output;
         
         % Compute local gradient of output layer
-        local_gradient_output = d_output_function(output_activation) .* output_error;
+        local_gradient_output = d_output_function(output);
         
         % Compute the error on the hidden layer (backpropagate)
-        hidden_error = local_gradient_output * w_output.';        
+        hidden_error = 0;        
         
         % Compute local gradient of hidden layer
-        local_gradient_hidden = d_sigmoid(hidden_activation) .* hidden_error;
+        local_gradient_hidden = 0;
         
         % Compute the delta rule for the output
-        delta_output = (local_gradient_output .* hidden_output) * learn_rate;
+        delta_output = 0;
         
         % Compute the delta rule for the hidden units;
         delta_hidden = 0;
