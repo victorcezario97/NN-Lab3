@@ -12,6 +12,7 @@ plot_animation = true;
 % Parameters for the network
 learn_rate = 0.2;               % learning rate
 max_epoch = 5000;              % maximum number of epochs
+min_error = 0.01;
 
 mean_weight = 0;
 weight_spread = 1;
@@ -53,7 +54,7 @@ while ~stop_criterium
     for pattern = 1:size(input_data,1)
         
         % Compute the activation in the hidden layer
-        hidden_activation = input_data * w_hidden;
+        hidden_activation = input_data(pattern,:) * w_hidden;
         
         % Compute the output of the hidden layer (don't modify this)
         hidden_output = sigmoid(hidden_activation);
@@ -65,26 +66,26 @@ while ~stop_criterium
         output = output_function(output_activation);
         
         % Compute the error on the output
-        output_error = goal - output;
+        output_error = goal(pattern) - output;
         
         % Compute local gradient of output layer
-        local_gradient_output = d_output_function(output_activation) .* output_error;
+        local_gradient_output = d_output_function(output_activation) * output_error;
         
         % Compute the error on the hidden layer (backpropagate)
-        hidden_error = local_gradient_output * w_output.';        
+        hidden_error = local_gradient_output * w_output;        
         
         % Compute local gradient of hidden layer
-        local_gradient_hidden = d_sigmoid(hidden_activation) .* hidden_error;
+        local_gradient_hidden = d_sigmoid(hidden_activation) .* hidden_error.';
         
         % Compute the delta rule for the output
         delta_output = (local_gradient_output .* hidden_output) * learn_rate;
         
         % Compute the delta rule for the hidden units;
-        delta_hidden = 0;
+        delta_hidden = (input_data(pattern, :).' * local_gradient_hidden) * learn_rate;
         
         % Update the weight matrices
-        w_hidden = 0;
-        w_output = 0;
+        w_hidden = w_hidden + delta_hidden;
+        w_output = w_output + delta_output;
         
         % Store data
         epoch_error = epoch_error + (output_error).^2;        
@@ -103,6 +104,9 @@ while ~stop_criterium
     end
     
     % Implement a stop criterion here
+    if h_error(epoch) < min_error
+        stop_criterium = 1;
+    end
     
     % Plot the animation
     if and((mod(epoch,20)==0),(plot_animation))
