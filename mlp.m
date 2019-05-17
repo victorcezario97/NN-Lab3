@@ -15,14 +15,14 @@ max_epoch = 5000;              % maximum number of epochs
 min_error = 0.01;
 
 mean_weight = 0;
-weight_spread = 1;
+weight_spread = 5;
 
 n_input = size(examples,2);
 n_hidden = 20;
 n_output = size(goal,2);
 
 % Noise level at the input
-noise_level = 0.05;
+noise_level = 0.01;
 
 % Activation of the bias node
 bias_value = -1;
@@ -63,13 +63,13 @@ while ~stop_criterium
         output_activation = hidden_output * w_output;
         
         % Compute the output
-        output = output_function(output_activation);
+        output = sin_output_function(output_activation);
         
         % Compute the error on the output
         output_error = goal(pattern) - output;
         
         % Compute local gradient of output layer
-        local_gradient_output = d_output_function(output_activation) * output_error;
+        local_gradient_output = sin_d_output_function() * output_error;
         
         % Compute the error on the hidden layer (backpropagate)
         hidden_error = local_gradient_output * w_output;        
@@ -115,7 +115,7 @@ while ~stop_criterium
         for x1 = 1:21
             for x2 =  1:21
                 hidden_act = sigmoid([(x1/20 - 0.05) (x2/20 -0.05) bias_value] * w_hidden);
-                emp_output(x1,x2) = output_function(hidden_act * w_output);
+                emp_output(x1,x2) = sin_output_function(hidden_act * w_output);
             end
         end
         surf(0:0.05:1,0:0.05:1,emp_output) 
